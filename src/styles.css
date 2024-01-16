@@ -1,0 +1,115 @@
+.App {
+  font-family: sans-serif;
+}
+h1 {
+  text-align: center;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nameIcon {
+  background-color: rgb(197, 195, 195);
+  border-radius: 20px;
+  margin: 4px 0;
+  margin-right: 10px;
+  border: none;
+  color: black;
+  font-weight: bold;
+  padding: 5px 12px;
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.6;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.active {
+  opacity: 1;
+  border: 2px solid blue;
+}
+.nameIcon span {
+  margin-left: 10px;
+}
+
+.InputField {
+  width: 600px;
+  white-space: normal;
+  padding: 12px 14px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid blue;
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+}
+
+.Selectbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+input {
+  border: none;
+  font-size: 16px;
+}
+
+input:focus-visible {
+  outline: none;
+}
+
+.select-overlay {
+  display: block;
+  z-index: 10000;
+}
+
+.select-menu {
+  background-color: white;
+  height: 350px;
+  overflow: auto;
+  width: 350px;
+  border: 1px solid black;
+  position: absolute;
+}
+
+.select-menu ul {
+  list-style: none;
+  gap: 0.4rem;
+  padding: 0 12px;
+}
+
+.select-menu li {
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: 2.8rem 1fr auto;
+  align-items: center;
+  column-gap: 1.6rem;
+}
+
+.select-menu li:hover {
+  background-color: rgb(172, 169, 169);
+}
+
+.select-menu li img {
+  border-radius: 50%;
+  width: 100%;
+  grid-row: span 2;
+}
+
+.nameIcon {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: center;
+  column-gap: 0.6rem;
+}
+
+.nameIcon img {
+  border-radius: 50%;
+  width: 100%;
+  grid-row: span 2;
+}
