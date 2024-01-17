@@ -12,7 +12,7 @@ interface User {
   active: string;
 }
 
-const App: React.FC<User[]> = () => {
+const App = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedValues, setSelectedValues] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>(data);
@@ -20,8 +20,19 @@ const App: React.FC<User[]> = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [lastKeyPress, setLastKeyPress] = useState<number | null>(null);
 
-  const handleKeyDown = (e) => {
-    if (e.target.value === "" && e.keyCode === 8) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    const { value } = e.target;
+    setIsOpen(true);
+    toggleSelect();
+    if (value !== "" && e.keyCode === 13) {
+      const userArr = [...users];
+      const userData = userArr.find<User>(
+        (curr) => curr.name.toLowerCase() === value.toLowerCase()
+      );
+      if (userData) {
+        handleSelect(userData);
+      }
+    } else if (value === "" && e.keyCode === 8 && selectedValues.length > 0) {
       setIsOpen(false);
       const updateArr = [...selectedValues];
 
@@ -31,8 +42,8 @@ const App: React.FC<User[]> = () => {
       setSelectedValues(updateArr);
       setLastKeyPress(8);
       if (lastKeyPress === e.keyCode) {
-        handleDelete(updateArr[updateArr.length - 1]);
         setLastKeyPress(null);
+        handleDelete(updateArr[updateArr.length - 1]);
       }
     }
   };
@@ -47,7 +58,6 @@ const App: React.FC<User[]> = () => {
 
   const handleSelect = (value: User) => {
     setFlag(true);
-    const { name } = value;
     setIsOpen(false);
     setInputValue("");
     setSelectedValues((prev) => {
@@ -59,21 +69,27 @@ const App: React.FC<User[]> = () => {
     setIsOpen(false);
     value.active = "";
     const newArr = [...users];
-    newArr.splice(value.id, 0, value);
-    setUsers(newArr);
-    setSelectedValues((prev) => {
-      return prev.filter((e) => e.name != value.name);
-    });
+    if (value) {
+      newArr.splice(value.id, 0, value);
+      setUsers(newArr);
+      setSelectedValues((prev) => {
+        return prev.filter((e: User) => e.name != value.name);
+      });
+    }
   };
 
-  const filterUsers = (e) => {
+  const filterUsers = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setInputValue(value);
 
     let updateArr = [...users];
-    updateArr = updateArr.filter((curr) => {
+    updateArr = updateArr.filter((curr: User) => {
       return curr.name.toLowerCase().includes(value.toLowerCase());
     });
+
+    // if (!updateArr) {
+    //   toggleSelect();
+    // }
 
     setUsers(updateArr);
   };
@@ -103,7 +119,9 @@ const App: React.FC<User[]> = () => {
               onChange={filterUsers}
               onKeyDown={(e) => handleKeyDown(e)}
             />
-            {isOpen && <SelectComp users={users} handleSelect={handleSelect} />}
+            {isOpen && users.length > 0 && (
+              <SelectComp users={users} handleSelect={handleSelect} />
+            )}
           </div>
         </div>
       </div>
