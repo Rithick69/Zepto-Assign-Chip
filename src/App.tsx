@@ -3,14 +3,14 @@ import ButtonComp from "./ButtonComp";
 import SelectComp from "./SelectComp";
 import React, { useState } from "react";
 
-import { data } from "./data";
-
 interface User {
   id: number;
   name: string;
   email: string;
   active: string;
 }
+
+import { data } from "./data";
 
 const App = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,18 +21,19 @@ const App = () => {
   const [lastKeyPress, setLastKeyPress] = useState<number | null>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    const { value } = e.target;
+    const { value } = e.target as HTMLInputElement;
+    const keyCode = e.keyCode as number;
     setIsOpen(true);
     toggleSelect();
-    if (value !== "" && e.keyCode === 13) {
+    if (value !== "" && keyCode === 13) {
       const userArr = [...users];
-      const userData = userArr.find<User>(
+      const userData = userArr.find(
         (curr) => curr.name.toLowerCase() === value.toLowerCase()
       );
       if (userData) {
         handleSelect(userData);
       }
-    } else if (value === "" && e.keyCode === 8 && selectedValues.length > 0) {
+    } else if (value === "" && keyCode === 8 && selectedValues.length > 0) {
       setIsOpen(false);
       const updateArr = [...selectedValues];
 
@@ -41,14 +42,14 @@ const App = () => {
       }
       setSelectedValues(updateArr);
       setLastKeyPress(8);
-      if (lastKeyPress === e.keyCode) {
+      if (lastKeyPress === keyCode) {
         setLastKeyPress(null);
         handleDelete(updateArr[updateArr.length - 1]);
       }
     }
   };
 
-  const toggleSelect = () => {
+  const toggleSelect = (): void => {
     const arr1 = [...selectedValues];
     const arr2 = [...data];
     const orginalArr = arr2.filter((item) => !arr1.includes(item));
@@ -56,7 +57,7 @@ const App = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelect = (value: User) => {
+  const handleSelect = (value: User): void => {
     setFlag(true);
     setIsOpen(false);
     setInputValue("");
@@ -65,7 +66,7 @@ const App = () => {
     });
   };
 
-  const handleDelete = (value: User) => {
+  const handleDelete = (value: User): void => {
     setIsOpen(false);
     value.active = "";
     const newArr = [...users];
@@ -73,59 +74,59 @@ const App = () => {
       newArr.splice(value.id, 0, value);
       setUsers(newArr);
       setSelectedValues((prev) => {
-        return prev.filter((e: User) => e.name != value.name);
+        return prev.filter((e) => e.name != value.name);
       });
     }
   };
 
-  const filterUsers = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+  const filterUsers = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { value } = e.target as HTMLInputElement;
     setInputValue(value);
 
     let updateArr = [...users];
-    updateArr = updateArr.filter((curr: User) => {
+    updateArr = updateArr.filter((curr) => {
       return curr.name.toLowerCase().includes(value.toLowerCase());
     });
-
-    // if (!updateArr) {
-    //   toggleSelect();
-    // }
 
     setUsers(updateArr);
   };
 
   return (
-    <div className="App">
-      <h1>Pick Users</h1>
+    <>
+      <div className="App">
+        <h1>Pick Users</h1>
 
-      <div className="container">
-        <div className="InputField">
-          {flag &&
-            selectedValues.map((curr, idx) => {
-              return (
-                <ButtonComp
-                  key={idx}
-                  data={curr}
-                  deleteFunc={handleDelete}
-                ></ButtonComp>
-              );
-            })}
-          <div className="Selectbox">
-            <input
-              type="text"
-              placeholder="Add new user"
-              value={inputValue}
-              onClick={toggleSelect}
-              onChange={filterUsers}
-              onKeyDown={(e) => handleKeyDown(e)}
-            />
-            {isOpen && users.length > 0 && (
-              <SelectComp users={users} handleSelect={handleSelect} />
-            )}
+        <div className="container">
+          <div className="InputField">
+            {flag &&
+              selectedValues.map((curr, idx) => {
+                return (
+                  <ButtonComp
+                    key={idx}
+                    data={curr}
+                    deleteFunc={handleDelete}
+                  ></ButtonComp>
+                );
+              })}
+            <div className="Selectbox">
+              <input
+                type="text"
+                placeholder="Add new user"
+                value={inputValue}
+                onClick={toggleSelect}
+                onChange={filterUsers}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                  handleKeyDown(e)
+                }
+              />
+              {isOpen && users.length > 0 && (
+                <SelectComp users={users} handleSelect={handleSelect} />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
