@@ -5,11 +5,8 @@
     "compilerOptions": {
         "strict": true,
         "esModuleInterop": true,
-        "target": "es6",
-        "lib": [
-            "dom",
-            "es2015"
-        ],
+        "target": "ES2020",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "jsx": "react-jsx"
     }
 }
